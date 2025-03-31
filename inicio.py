@@ -6,29 +6,37 @@ from io import BytesIO
 import os
 from dotenv import load_dotenv
 
-# Cargar API Key desde archivo .env
+# Cargar la clave API
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
-
-# Inicializa el cliente de OpenAI
 client = OpenAI(api_key=api_key)
 
-# Título de la app
-st.title("🖼️ Generador de Imágenes con IA")
+st.title("🖼️ Generador de Imágenes con Estilo")
 
 # Input del usuario
-prompt = st.text_input("Describe tu imagen (en inglés o español):")
+prompt = st.text_input("Describe tu imagen (en español o inglés):")
+
+# Selector de estilo
+estilo = st.selectbox("Selecciona un estilo artístico:", [
+    "Realista",
+    "Ilustración digital",
+    "Estilo anime",
+    "Pintura al óleo",
+    "Pixel art",
+    "Arte abstracto"
+])
 
 # Botón para generar
 if st.button("Generar Imagen"):
     if prompt:
-        with st.spinner("🧠 Mejorando el prompt..."):
-            # Mejora del prompt con GPT
+        with st.spinner("🧠 Mejorando el prompt con estilo..."):
+            prompt_con_estilo = f"{prompt}. Generar en estilo: {estilo.lower()}."
+
             response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
-                    {"role": "system", "content": "Eres un experto en crear prompts para generar imágenes con IA."},
-                    {"role": "user", "content": f"Mejora este prompt para generar una imagen con DALL·E: {prompt}"}
+                    {"role": "system", "content": "Eres un experto en crear prompts para generar imágenes con DALL·E."},
+                    {"role": "user", "content": f"Mejora este prompt para generar una imagen con DALL·E: {prompt_con_estilo}"}
                 ]
             )
             improved_prompt = response.choices[0].message.content.strip()
@@ -36,7 +44,6 @@ if st.button("Generar Imagen"):
         st.success("✅ Prompt mejorado:")
         st.markdown(f"**{improved_prompt}**")
 
-        # Generar imagen
         with st.spinner("🎨 Generando imagen..."):
             image_response = client.images.generate(
                 model="dall-e-3",
@@ -44,7 +51,6 @@ if st.button("Generar Imagen"):
                 n=1,
                 size="1024x1024"
             )
-
             image_url = image_response.data[0].url
             image = Image.open(BytesIO(requests.get(image_url).content))
             st.image(image, caption=improved_prompt)
