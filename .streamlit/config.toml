@@ -1,9 +1,8 @@
-[server]
-headless = true
 
-[theme]
-primaryColor = "#6C63FF"
-backgroundColor = "#F7F6FD"
-secondaryBackgroundColor = "#ffffff"
-textColor = "#000000"
-font = "sans serif"
+[ui]
+page_title = "🖼️ Generador de Imágenes con Estilo"
+prompt_label = "Describe tu imagen (en español o inglés):"
+generate_button = "🎨 Generar Imagen"
+result_title = "🖼️ Resultado"
+error_message = "⚠️ Por favor ingresa una descripción para generar una imagen."
+success_message = "✅ Imagen generada correctamente"
